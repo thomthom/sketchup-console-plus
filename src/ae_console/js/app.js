@@ -57,6 +57,8 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     // Hack: Thomthom
     var snippets = [];
     var snippetsIndex = -1;
+    var snippetsTimer = null;
+    var snippetTypeIndex = null;
 
     function loadSnippets() {
         snippets = [
@@ -74,11 +76,32 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         if (snippetsIndex >= snippets.length - 1) return;
 
         snippetsIndex++;
+        // var snippet = snippets[snippetsIndex];
+        // setInputText(snippet);
+        updateSnippetsUI();
+        startSnippetTyping();
+    }
+
+    function startSnippetTyping() {
+        snippetTypeIndex = 0;
+        snippetsTimer = setInterval(snippetType, 10 /* ms */);
+    }
+
+    function snippetType() {
         var snippet = snippets[snippetsIndex];
-        console.setContent(snippet);
+        snippetTypeIndex++;
+        if (snippetTypeIndex >= snippet.length) {
+            clearInterval(snippetsTimer);
+        }
+
+        var subSnippet = snippet.substring(0, snippetTypeIndex);
+        setInputText(subSnippet);
+    }
+
+    function setInputText(text) {
+        console.setContent(text);
         console.focus();
         console.navigateToEnd();
-        updateSnippetsUI();
     }
 
     function updateSnippetsUI() {
