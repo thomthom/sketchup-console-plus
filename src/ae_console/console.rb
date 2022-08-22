@@ -1,3 +1,7 @@
+# Hack: thomthom
+require 'json'
+# Hack end
+
 module AE
 
   module ConsolePlugin
@@ -175,6 +179,12 @@ module AE
           }
         }
 
+        # Hack: thomthom
+        @dialog.add_action_callback('load_snippets') { |action_context|
+          prompt_load_snippets
+        }
+        # Hack end
+
         if @dialog.respond_to?(:set_can_close) # UI::HtmlDialog
           @dialog.set_can_close {
             trigger(:before_close)
@@ -191,6 +201,24 @@ module AE
           }
         end
       end
+
+      # Hack: thomthom
+      def prompt_load_snippets
+        markdown_path = UI.openpanel("Open Markdown File", nil, "Markdown Files|*.md;||")
+        return if markdown_path.nil?
+
+        data = File.read(markdown_path, encoding: 'utf-8')
+        matches = data.scan(/```rb$(.*?)^```/m)
+        return if matches.nil? || matches.empty?
+
+        code_blocks = matches.map { |match| match[0].strip }
+        snippets = code_blocks # TODO: filter out blocks that have special markers
+
+        json_snippets = JSON.pretty_generate(snippets)
+        script = "setSnippets(#{json_snippets})"
+        @dialog.execute_script(script)
+      end
+      # Hack end
 
       def do_eval(action_context, command, line_number=0, metadata={})
         begin

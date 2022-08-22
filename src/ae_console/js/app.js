@@ -54,7 +54,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         });
     }
 
-    // Hack: Thomthom
+    // Hack: thomthom
     var snippets = [];
     var snippetsIndex = -1;
     var snippetsTimer = null;
@@ -70,6 +70,13 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         snippetsIndex = -1;
         updateSnippetsUI();
     }
+
+    function setSnippets(newSnippets) {
+        snippets = newSnippets;
+        snippetsIndex = -1;
+        updateSnippetsUI();
+    }
+    window.setSnippets = setSnippets;
 
     function nextSnippet() {
         if (snippets.length == 0) return;
@@ -112,7 +119,8 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
     var commandLoadSnippets = function () {
         // console.log('commandLoadSnippets');
-        loadSnippets();
+        // loadSnippets();
+        sketchup.load_snippets();
     };
     var commandNextSnippet = function () {
         // console.log('commandNextSnippet');
@@ -132,7 +140,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
             console.clearOutput();
         });
 
-        // Hack: Thomthom
+        // Hack: thomthom
         $('#commandNextSnippet').attr('title', Translate.get('Next snippet.'));
         $('#commandNextSnippet').on('click', commandNextSnippet);
 
