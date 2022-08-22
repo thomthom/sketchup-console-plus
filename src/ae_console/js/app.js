@@ -59,6 +59,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     var snippetsIndex = -1;
     var snippetsTimer = null;
     var snippetTypeIndex = null;
+    var snippetAudio = null;
 
     function loadSnippets() {
         snippets = [
@@ -91,7 +92,19 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
     function startSnippetTyping() {
         snippetTypeIndex = 0;
-        snippetsTimer = setInterval(snippetType, 10 /* ms */);
+        // snippetsTimer = setInterval(snippetType, 10 /* ms */);
+        setTimeout(() => {
+            snippetsTimer = setInterval(snippetType, 10 /* ms */);
+        }, 500);
+
+        if (snippetAudio) {
+            snippetAudio.pause();
+        }
+        var url = "../audio/keyboard-typing.mp3"
+        snippetAudio = new Audio(url);
+        snippetAudio.addEventListener("canplaythrough", (event) => {
+            snippetAudio.play();
+        });
     }
 
     function snippetType() {
@@ -99,6 +112,10 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         snippetTypeIndex++;
         if (snippetTypeIndex >= snippet.length) {
             clearInterval(snippetsTimer);
+
+            if (snippetAudio) {
+                snippetAudio.pause();
+            }
         }
 
         var subSnippet = snippet.substring(0, snippetTypeIndex);
