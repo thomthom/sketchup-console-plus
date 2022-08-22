@@ -72,6 +72,10 @@ define(['jquery', './bridge', './translate'], function ($, Bridge, Translate) {
             });
         }
 
+        this.navigateToEnd = function () {
+            aceEditor.navigateFileEnd();
+        };
+
         this.focus = function () {
             aceEditor.focus();
         };

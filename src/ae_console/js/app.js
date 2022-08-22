@@ -54,6 +54,49 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         });
     }
 
+    // Hack: Thomthom
+    var snippets = [];
+    var snippetsIndex = -1;
+
+    function loadSnippets() {
+        snippets = [
+        "# Guess what this does?\nmodel = Sketchup.active_model",
+        "# Guess what this does?\nentities = model.active_entities",
+        "sel = model.selection",
+        "123 + 456",
+        ];
+        snippetsIndex = -1;
+        updateSnippetsUI();
+    }
+
+    function nextSnippet() {
+        if (snippets.length == 0) return;
+        if (snippetsIndex >= snippets.length - 1) return;
+
+        snippetsIndex++;
+        var snippet = snippets[snippetsIndex];
+        console.setContent(snippet);
+        console.focus();
+        console.navigateToEnd();
+        updateSnippetsUI();
+    }
+
+    function updateSnippetsUI() {
+        var itemNumber = snippetsIndex + 1;
+        var status = `Snippet: ${itemNumber} of ${snippets.length}`;
+        $('#snippetStatus').text(status);
+    }
+
+    var commandLoadSnippets = function () {
+        // console.log('commandLoadSnippets');
+        loadSnippets();
+    };
+    var commandNextSnippet = function () {
+        // console.log('commandNextSnippet');
+        nextSnippet();
+    };
+    // Hack end
+
     function initializeConsoleUI (console, settings) {
         // Toolbar buttons
         $('#buttonConsoleSwitchToEditor').attr('title', Translate.get('Editor')+' ('+Translate.get('ctrl')+'-Tab)');
@@ -65,6 +108,14 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         $('#buttonConsoleClear').on('click', function () {
             console.clearOutput();
         });
+
+        // Hack: Thomthom
+        $('#commandNextSnippet').attr('title', Translate.get('Next snippet.'));
+        $('#commandNextSnippet').on('click', commandNextSnippet);
+
+        $('#commandLoadSnippets').attr('title', Translate.get('Load snippets.'));
+        $('#commandLoadSnippets').on('click', commandLoadSnippets);
+        // Hack end
 
         // Console Menu
         consoleMenu = new Menu($('#menuConsole')[0]);
