@@ -141,6 +141,14 @@ requirejs(['app', 'bridge', 'translate', 'window_geometry', 'get_current_tokens'
         }
     };
 
+    // Hack: Thomthom
+    var commandNextSnippet = function () {
+        console.log('commandNextSnippet');
+    };
+    var commandLoadSnippets = function () {
+        console.log('commandLoadSnippets');
+    };
+
     /**
      * Register shortcuts.
      */
@@ -164,6 +172,13 @@ requirejs(['app', 'bridge', 'translate', 'window_geometry', 'get_current_tokens'
 
     $('#buttonEditorHelp').attr('title', Translate.get('Show documentation for the currently focussed word in a browser window.')+' (Ctrl+Q)');
     $('#buttonEditorHelp').on('click', commandEditorHelp);
+
+    // Hack: Thomthom
+    $('#commandNextSnippet').attr('title', Translate.get('Next snippet.'));
+    $('#commandNextSnippet').on('click', commandNextSnippet);
+
+    $('#commandLoadSnippets').attr('title', Translate.get('Load snippets.'));
+    $('#commandLoadSnippets').on('click', commandLoadSnippets);
 });
 JAVASCRIPT
       end
