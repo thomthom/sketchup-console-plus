@@ -61,7 +61,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     var snippetTypeIndex = null;
     var snippetAudio = null;
 
-    function loadSnippets() {
+    function loadStubSnippets() {
         snippets = [
         "# Guess what this does?\nmodel = Sketchup.active_model",
         "# Guess what this does?\nentities = model.active_entities",
@@ -128,6 +128,21 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
         console.navigateToEnd();
     }
 
+    function setSnippetIndex() {
+        if (snippets.length < 1) return;
+
+        var message = `Set snippet index: (between 1 and ${snippets.length})`;
+        var input = prompt(message, snippetsIndex + 1);
+        if (input === null) return;
+
+        var newIndex = parseInt(input) - 1;
+        if (newIndex < 0) return;
+        if (newIndex >= snippets.length) return;
+
+        snippetsIndex = newIndex;
+        updateSnippetsUI();
+    }
+
     function updateSnippetsUI() {
         var itemNumber = snippetsIndex + 1;
         var status = `Snippet: ${itemNumber} of ${snippets.length}`;
@@ -142,6 +157,10 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
     var commandNextSnippet = function () {
         // console.log('commandNextSnippet');
         nextSnippet();
+    };
+    var commandSetSnippetIndex = function () {
+        // console.log('commandSetSnippetIndex');
+        setSnippetIndex();
     };
     // Hack end
 
@@ -163,6 +182,8 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
 
         $('#commandLoadSnippets').attr('title', Translate.get('Load snippets.'));
         $('#commandLoadSnippets').on('click', commandLoadSnippets);
+
+        $('#snippetStatus').on('click', commandSetSnippetIndex);
         // Hack end
 
         // Console Menu
@@ -217,7 +238,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
                     allow_dismiss: true
                 });
                 notify.$ele.removeClass('col-xs-11'); // Hack to disable responsiveness (notification stretching over full width in narrow dialogs).
-                // Dispatch the code evaluation to allow the GUI to update (show the notification) 
+                // Dispatch the code evaluation to allow the GUI to update (show the notification)
                 // in case code evaluation freezes the GUI.
                 window.setTimeout(function() {
                     Bridge.get('eval', editor.getContent()).then(function (resultAndMetadata) {
@@ -229,7 +250,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
                     });
                 }, 10);
             } else {
-                $.notify(Translate.get('Only Ruby code can be run.') + ' \n' + 
+                $.notify(Translate.get('Only Ruby code can be run.') + ' \n' +
                         Translate.get('If this is Ruby code, set the edit mode in the menu.'), {
                     type: 'warning',
                     element: $('#editorContentWrapper'),
@@ -399,7 +420,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
             $(document).one('click', hide);
             $(document).on('keydown', escHide);
         });
-        
+
         // Load by default a list of recently edited files.
         var recentlyOpened = settings.getProperty('recently_opened_files', []);
         $search.filterlist({
@@ -424,7 +445,7 @@ define(['ace/ace', 'jquery', 'bootstrap', 'bootstrap-notify', 'bootstrap-filterl
                     dirname = dirname.replace(regexp, replacement);
                     basename = basename.replace(regexp, replacement);
                 }
-                
+
                 return $('<li>').append([
                     $('<span>').html(basename),
                     $('<br>'),
