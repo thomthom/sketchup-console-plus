@@ -212,7 +212,7 @@ module AE
         return if matches.nil? || matches.empty?
 
         code_blocks = matches.map { |match| match[0].strip }
-        snippets = code_blocks # TODO: filter out blocks that have special markers
+        snippets = code_blocks
 
         json_snippets = JSON.pretty_generate(snippets)
         script = "setSnippets(#{json_snippets})"
